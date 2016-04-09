@@ -71,7 +71,7 @@ import java.io.IOException;
  * 
  * @author Kirill Vainer
  */
-public class ParticleEmitter extends Geometry {
+public class ParticleEmitter extends Geometry implements IParticleEmitter {
 
     private boolean enabled = true;
     private static final EmitterShape DEFAULT_SHAPE = new EmitterPointShape(Vector3f.ZERO);
@@ -255,6 +255,7 @@ public class ParticleEmitter extends Geometry {
      * 
      * @see ParticleInfluencer
      */
+    @Override
     public void setParticleInfluencer(ParticleInfluencer particleInfluencer) {
         this.particleInfluencer = particleInfluencer;
     }
@@ -268,6 +269,7 @@ public class ParticleEmitter extends Geometry {
      * 
      * @see ParticleInfluencer
      */
+    @Override
     public ParticleInfluencer getParticleInfluencer() {
         return particleInfluencer;
     }
@@ -281,6 +283,7 @@ public class ParticleEmitter extends Geometry {
      * @see #setMeshType(com.jme3.effect.ParticleMesh.Type)
      * @see ParticleEmitter#ParticleEmitter(java.lang.String, com.jme3.effect.ParticleMesh.Type, int) 
      */
+    @Override
     public ParticleMesh.Type getMeshType() {
         return meshType;
     }
@@ -338,6 +341,7 @@ public class ParticleEmitter extends Geometry {
      * 
      * @return the number of visible particles
      */
+    @Override
     public int getNumVisibleParticles() {
 //        return unusedIndices.size() + next;
         return lastUsed + 1;
@@ -351,6 +355,7 @@ public class ParticleEmitter extends Geometry {
      * @param numParticles the maximum amount of particles that
      * can exist at the same time with this emitter.
      */
+    @Override
     public final void setNumParticles(int numParticles) {
         particles = new Particle[numParticles];
         for (int i = 0; i < numParticles; i++) {
@@ -363,6 +368,7 @@ public class ParticleEmitter extends Geometry {
         lastUsed = -1;
     }
 
+    @Override
     public int getMaxNumParticles() {
         return particles.length;
     }
@@ -378,6 +384,7 @@ public class ParticleEmitter extends Geometry {
      * 
      * @return a list of all particles.
      */
+    @Override
     public Particle[] getParticles() {
         return particles;
     }
@@ -707,6 +714,7 @@ public class ParticleEmitter extends Geometry {
      * 
      * @see ParticleEmitter#setParticlesPerSec(float) 
      */
+    @Override
     public float getParticlesPerSec() {
         return particlesPerSec;
     }
@@ -718,6 +726,7 @@ public class ParticleEmitter extends Geometry {
      * @param particlesPerSec the number of particles to spawn per
      * second.
      */
+    @Override
     public void setParticlesPerSec(float particlesPerSec) {
         this.particlesPerSec = particlesPerSec;
         timeDifference = 0;
@@ -868,6 +877,7 @@ public class ParticleEmitter extends Geometry {
      * Instantly emits all the particles possible to be emitted. Any particles
      * which are currently inactive will be spawned immediately.
      */
+    @Override
     public void emitAllParticles() {
         emitParticles(particles.length);
     }
@@ -875,6 +885,7 @@ public class ParticleEmitter extends Geometry {
     /**
      * Instantly emits available particles, up to num.
      */
+    @Override
     public void emitParticles(int num) {
         // Force world transform to update
         this.getWorldTransform();
@@ -910,6 +921,7 @@ public class ParticleEmitter extends Geometry {
      * Instantly kills all active particles, after this method is called, all
      * particles will be dead and no longer visible.
      */
+    @Override
     public void killAllParticles() {
         for (int i = 0; i < particles.length; ++i) {
             if (particles[i].life > 0) {
@@ -924,6 +936,7 @@ public class ParticleEmitter extends Geometry {
      * @param index The index of the particle to kill
      * @see #getParticles() 
      */
+    @Override
     public void killParticle(int index){
         freeParticle(index);
     }
@@ -1043,6 +1056,7 @@ public class ParticleEmitter extends Geometry {
      * 
      * @param enabled True to enable the particle emitter
      */
+    @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
@@ -1054,6 +1068,7 @@ public class ParticleEmitter extends Geometry {
      * 
      * @see ParticleEmitter#setEnabled(boolean) 
      */
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
@@ -1096,6 +1111,11 @@ public class ParticleEmitter extends Geometry {
         if (!worldSpace) {
             vars.release();
         }
+    }
+    
+    @Override
+    public IParticleEmitter findEmitter() {
+        return this;
     }
 
     public void preload(RenderManager rm, ViewPort vp) {
